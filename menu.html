@@ -1,11 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>Eu sou autista e faço informatica pra esconder meus sofrimentos</h1>
+<body class="plain">
+  <!-- Página provisória: substitua pelo seu menu real, mantendo o redirecionamento do login para "menu.html". -->
+  <main class="login">
+    <section class="card">
+      <h2>MENU</h2>
+      <p class="lead" id="welcome"></p>
+      <button class="btn" id="logout">Sair</button>
+    </section>
+  </main>
+  <script src="auth.js"></script>
+  <script>
+    const user = Auth.current();
+    if (!user) location.replace('login.html');
+    document.getElementById('welcome').textContent = 'Bem-vindo(a), ' + user + '!';
+    document.getElementById('logout').addEventListener('click', () => { Auth.logout(); location.assign('login.html'); });
+  </script>
 </body>
 </html>
