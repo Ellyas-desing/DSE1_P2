@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&family=Unbounded:wght@800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@vectoricons/atlas-icons@latest/packs/medical/style.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stage">
+    <svg id="scene" preserveAspectRatio="xMidYMid meet" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="beam-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffea75" stop-opacity="0.45"/>
+          <stop offset="50%" stop-color="#ffda47" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#ffb703" stop-opacity="0"/>
+        </linearGradient>
+
+        <radialGradient id="lamp-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+          <stop offset="30%" stop-color="#ffea75" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#ffea75" stop-opacity="0"/>
+        </radialGradient>
+
+        <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#111"/>
+          <stop offset="50%" stop-color="#444"/>
+          <stop offset="100%" stop-color="#0a0a0a"/>
+        </linearGradient>
+
+        <filter id="depth-shadow" x="-20%" y="-20%" width="150%" height="150%">
+          <feDropShadow dx="-15" dy="20" stdDeviation="15" flood-color="#000000" flood-opacity="0.95"/>
+        </filter>
+      </defs>
+
+      <polygon id="light-beam" points="800,216 -260,800 1540,800" fill="url(#beam-grad)" />
+      <circle id="core-glow" cx="800" cy="216" r="145" fill="url(#lamp-glow)" pointer-events="none"/>
+
+      <g id="lamp-wrapper" transform="translate(800, 0)">
+        <rect x="-62" y="0" width="124" height="12" rx="6" fill="url(#metal)"/>
+        <rect x="-23" y="9" width="46" height="16" rx="7" fill="#151515"/>
+        <line x1="0" y1="24" x2="0" y2="116" stroke="#151515" stroke-width="5"/>
+        <rect x="-19" y="112" width="38" height="28" rx="7" fill="url(#metal)"/>
+        <path d="M -25 139 L 25 139 L 16 151 L -16 151 Z" fill="#111"/>
+
+        <g aria-label="Lâmpada pendente clássica">
+          <circle cx="0" cy="207" r="69" fill="rgb(10 12 20 / 0.68)" stroke="#30394a" stroke-width="3"/>
+          <ellipse cx="0" cy="207" rx="69" ry="25" fill="none" stroke="#394153" stroke-width="7" transform="rotate(44 0 207)"/>
+          <ellipse cx="0" cy="207" rx="69" ry="25" fill="none" stroke="#394153" stroke-width="7" transform="rotate(-44 0 207)"/>
+          <ellipse cx="0" cy="207" rx="69" ry="25" fill="none" stroke="#394153" stroke-width="7"/>
+          <!-- Bulbo virado para baixo: rosca presa ao soquete, vidro redondo apontando para o chão -->
+          <path id="bulb-glass" transform="translate(0 414) scale(1 -1)" d="M 0 163 C -30 163 -39 198 -26 222 C -18 238 -11 243 -11 252 L 11 252 C 11 243 18 238 26 222 C 39 198 30 163 0 163 Z" stroke="#49556a" stroke-width="2"/>
+          <rect transform="translate(0 414) scale(1 -1)" x="-13" y="250" width="26" height="9" rx="3" fill="#171b25"/>
+          <path id="filament" d="M -11 213 L -4 225 L 4 213 L 11 225" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </g>
+
+      <g id="wall-switch" transform="translate(580, 276)">
+        <rect x="0" y="0" width="44" height="62" rx="6" fill="#d5d9df" stroke="#70798a" stroke-width="2"/>
+        <rect x="14" y="10" width="16" height="41" rx="5" fill="#252b36"/>
+        <rect id="switch-handle" x="17" y="27" width="10" height="19" rx="3" fill="#8f99a9"/>
+        <circle cx="7" cy="8" r="2" fill="#737d8e"/>
+        <circle cx="37" cy="8" r="2" fill="#737d8e"/>
+        <circle cx="7" cy="54" r="2" fill="#737d8e"/>
+        <circle cx="37" cy="54" r="2" fill="#737d8e"/>
+      </g>
+
+      <g id="foreground-group">
+        <g id="robot-scale" tabindex="0" role="button" aria-pressed="false" aria-label="Robô: toque para acionar o interruptor da lâmpada" transform="translate(-210, -50) scale(1.4)" filter="url(#depth-shadow)">
+          <rect x="250" y="120" width="360" height="460" fill="transparent"/>
+
+          <path class="mat" d="M 310 260 L 260 330 L 280 390" fill="none" style="stroke: var(--r-base);" stroke-width="20" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle class="mat" cx="310" cy="260" r="12" style="fill: var(--r-joint);" />
+
+          <path class="mat" d="M 330 400 L 300 480 L 320 560 L 340 560" fill="none" style="stroke: var(--r-base);" stroke-width="22" stroke-linejoin="round" stroke-linecap="round" />
+          <circle class="mat" cx="330" cy="400" r="14" style="fill: var(--r-joint);"/>
+
+          <path class="mat" d="M 370 400 L 420 460 L 390 540 L 410 540" fill="none" style="stroke: var(--r-mid);" stroke-width="24" stroke-linejoin="round" stroke-linecap="round" />
+          <circle class="mat" cx="370" cy="400" r="14" style="fill: var(--r-light);"/>
+          <circle class="mat" cx="420" cy="460" r="12" style="fill: var(--r-light);"/>
+
+          <rect class="mat" x="330" y="375" width="40" height="35" style="fill: var(--r-base);" rx="6" />
+          <line class="mat" x1="335" y1="385" x2="365" y2="385" style="stroke: var(--r-mid);" stroke-width="2"/>
+
+          <path class="mat" d="M 310 250 C 310 230 390 230 390 250 L 410 290 L 380 300 L 370 380 L 330 380 L 320 300 L 290 290 Z" style="fill: var(--r-light); stroke: var(--r-stroke);" stroke-width="2" />
+
+          <path class="mat" d="M 325 170 C 325 130 375 130 375 170 C 380 210 350 230 350 230 C 350 230 320 210 325 170 Z" style="fill: var(--r-mid);" />
+          <path class="mat" d="M 335 175 C 335 150 365 150 365 175 C 365 200 350 215 350 215 C 350 215 335 200 335 175 Z" style="fill: var(--r-stroke);" />
+
+          <rect id="visor-light" x="340" y="180" width="20" height="5" rx="2.5" />
+
+          <g id="right-arm-group">
+            <path id="right-arm" class="mat" d="M 390 260 L 485 280 L 580 250" fill="none" style="stroke: var(--r-light);" stroke-width="22" stroke-linejoin="round" stroke-linecap="round"/>
+            <circle class="mat" cx="390" cy="260" r="14" style="fill: var(--r-mid);" />
+            <circle id="right-elbow" class="mat" cx="485" cy="280" r="12" style="fill: var(--r-mid);" />
+            <circle id="right-hand" class="mat" cx="580" cy="250" r="12" style="fill: var(--r-joint);" />
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <main class="login">
+    <section class="card">
+      <h2>LOGIN</h2>
+
+      <form id="form" novalidate>
+        <div class="field" id="f-user">
+          <label for="user">Nome de usuário</label>
+          <div class="input-wrap">
+            <input id="user" name="user" type="text" autocomplete="username" placeholder="Digite seu usuário">
+          </div>
+          <p class="error" aria-live="polite"></p>
+        </div>
+
+        <div class="field" id="f-pass">
+          <label for="pass">Senha</label>
+          <div class="input-wrap">
+            <input id="pass" name="pass" type="password" autocomplete="current-password" placeholder="Digite sua senha">
+
+            <button type="button" class="toggle" id="toggle" aria-label="Mostrar senha">
+              <i class="at-eye-thin password-icon password-icon-off" aria-hidden="true"></i>
+              <i class="at-eye-thin password-icon password-icon-on" aria-hidden="true"></i>
+              <span class="sr-only">Mostrar senha</span>
+            </button>
+          </div>
+          <p class="error" aria-live="polite"></p>
+        </div>
+
+        <button type="submit" class="btn" id="btn">Confirmar</button>
+        <p class="status" id="status" aria-live="polite"></p>
+        <p class="alt">Não tem conta? <a href="cadastro.html" id="link-cadastro">Cadastre-se</a></p>
+      </form>
+    </section>
+
+    <aside class="welcome-message">
+      <span>Faça parte</span>
+      <span>hoje mesmo</span>
+      <span>e seja nosso</span>
+      <span>aliado do futuro.</span>
+    </aside>
+  </main>
+
+  <div class="loading-overlay" id="loading-overlay" role="status" aria-live="polite" aria-hidden="true">
+    <span class="loader" aria-hidden="true"></span>
+    <p>Preparando seu acesso…</p>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    const form = document.getElementById('form');
+    const userInput = document.getElementById('user');
+    const pass = document.getElementById('pass');
+    const toggle = document.getElementById('toggle');
+    const btn = document.getElementById('btn');
+    const status = document.getElementById('status');
+
+    // Vindo do cadastro: já preenche o usuário
+    const params = new URLSearchParams(location.search);
+    if (params.get('usuario')) userInput.value = params.get('usuario');
+    if (params.get('cadastrado')) status.textContent = 'Conta criada! Ligue a luz e entre.';
+
+    toggle.addEventListener('click', () => {
+      const show = pass.type === 'password';
+
+      pass.type = show ? 'text' : 'password';
+      toggle.classList.toggle('is-visible', show);
+      toggle.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+      toggle.querySelector('.sr-only').textContent = show ? 'Ocultar senha' : 'Mostrar senha';
+    });
+
+    function showError(id, message) {
+      const field = document.getElementById(id).closest('.field');
+      field.classList.toggle('invalid', !!message);
+      field.querySelector('.error').textContent = message || '';
+    }
+
+    function check(id, message) {
+      const empty = !document.getElementById(id).value.trim();
+      showError(id, empty ? message : '');
+      return !empty;
+    }
+
+    ['user', 'pass'].forEach(id =>
+      document.getElementById(id).addEventListener('input', () => showError(id, ''))
+    );
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+
+      const okUser = check('user', 'Digite seu usuário.');
+      const okPass = check('pass', 'Digite sua senha.');
+
+      if (!okUser || !okPass) {
+        (okUser ? pass : userInput).focus();
+        return;
+      }
+
+      const username = userInput.value.trim();
+      btn.disabled = true;
+      btn.textContent = 'Verificando…';
+
+      const account = Auth.find(username);
+
+      // Conta não existe: envia para o cadastro
+      if (!account) {
+        status.textContent = 'Conta não encontrada. Levando você ao cadastro…';
+        setTimeout(() => {
+          window.location.assign('cadastro.html?usuario=' + encodeURIComponent(username));
+        }, 1200);
+        return;
+      }
+
+      if (!(await Auth.verify(account, pass.value))) {
+        btn.disabled = false;
+        btn.textContent = 'Confirmar';
+        showError('pass', 'Senha incorreta.');
+        pass.focus();
+        return;
+      }
+
+      Auth.login(account.user);
+      btn.textContent = 'Entrando…';
+      status.textContent = 'Acesso confirmado. Redirecionando…';
+      setTimeout(concluirAcesso, 700);
+    });
+
+    function concluirAcesso() {
+      const loadingOverlay = document.getElementById('loading-overlay');
+
+      document.body.classList.add('is-loading');
+      loadingOverlay.setAttribute('aria-hidden', 'false');
+
+      setTimeout(() => {
+        window.location.assign('menu.html');
+      }, 1400);
+    }
+
+    const $ = (id) => document.getElementById(id);
+
+    const scene = $('scene');
+    const robot = $('robot-scale');
+    const arm = $('right-arm');
+    const elbow = $('right-elbow');
+    const hand = $('right-hand');
+    const switchHandle = $('switch-handle');
+    const card = document.querySelector('.card');
+
+    let pulled = false;
+
+    card.inert = true;
+
+    function fit() {
+      const r = innerWidth / innerHeight;
+      const W = Math.max(530, 600 * r);
+      const H = W / r;
+      const x0 = Math.min(120, 800 - 0.55 * W);
+      const y0 = r < 1 ? -90 : 0;
+
+      scene.setAttribute('viewBox', `${x0} ${y0} ${W} ${H}`);
+    }
+
+    fit();
+    addEventListener('resize', fit);
+
+    function pose(down) {
+      arm.setAttribute(
+        'd',
+        down
+          ? 'M 390 260 L 485 300 L 580 270'
+          : 'M 390 260 L 485 280 L 580 250'
+      );
+
+      elbow.setAttribute('cy', down ? 300 : 280);
+      hand.setAttribute('cy', down ? 270 : 250);
+    }
+
+    function toggleLight() {
+      const on = !scene.classList.contains('on');
+
+      scene.classList.toggle('on', on);
+      document.body.classList.toggle('lit', on);
+      robot.setAttribute('aria-pressed', on);
+      switchHandle.setAttribute('y', on ? '10' : '27');
+      card.inert = !on;
+    }
+
+    robot.addEventListener('pointerdown', () => {
+      pulled = true;
+      pose(true);
+    });
+
+    robot.addEventListener('pointerup', () => {
+      if (!pulled) return;
+
+      pulled = false;
+      pose(false);
+      toggleLight();
+    });
+
+    ['pointerleave', 'pointercancel'].forEach(type =>
+      robot.addEventListener(type, () => {
+        if (!pulled) return;
+
+        pulled = false;
+        pose(false);
+      })
+    );
+
+    robot.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+
+      e.preventDefault();
+      pose(true);
+
+      setTimeout(() => {
+        pose(false);
+        toggleLight();
+      }, 150);
+    });
+
+    robot.addEventListener('mousedown', (e) => e.preventDefault());
+  </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="plain">
+  <main class="login">
+    <section class="card">
+      <h2>CADASTRO</h2>
+      <p class="lead">Ainda não encontramos sua conta. Crie uma para entrar no time.</p>
+
+      <form id="form" novalidate>
+        <div class="field" id="f-user">
+          <label for="user">Nome de usuário</label>
+          <div class="input-wrap"><input id="user" type="text" autocomplete="username" placeholder="Escolha um usuário"></div>
+          <p class="error" aria-live="polite"></p>
+        </div>
+        <div class="field" id="f-pass">
+          <label for="pass">Senha</label>
+          <div class="input-wrap"><input id="pass" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"></div>
+          <p class="error" aria-live="polite"></p>
+        </div>
+        <div class="field" id="f-pass2">
+          <label for="pass2">Confirmar senha</label>
+          <div class="input-wrap"><input id="pass2" type="password" autocomplete="new-password" placeholder="Repita a senha"></div>
+          <p class="error" aria-live="polite"></p>
+        </div>
+
+        <label class="check"><input type="checkbox" id="show"> Mostrar senhas</label>
+
+        <button type="submit" class="btn" id="btn">Criar conta</button>
+        <p class="status" id="status" aria-live="polite"></p>
+        <p class="alt">Já tem conta? <a href="login.html">Voltar ao login</a></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const status = $('status'), btn = $('btn');
+
+    const q = new URLSearchParams(location.search);
+    if (q.get('usuario')) $('user').value = q.get('usuario');
+
+    function showError(id, msg) {
+      const field = $(id).closest('.field');
+      field.classList.toggle('invalid', !!msg);
+      field.querySelector('.error').textContent = msg || '';
+    }
+    ['user', 'pass', 'pass2'].forEach((id) => $(id).addEventListener('input', () => showError(id, '')));
+
+    $('show').addEventListener('change', (e) => {
+      $('pass').type = $('pass2').type = e.target.checked ? 'text' : 'password';
+    });
+
+    $('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      const user = $('user').value.trim(), pass = $('pass').value, pass2 = $('pass2').value;
+
+      const errU = user.length < 3 ? 'Use pelo menos 3 caracteres.' : '';
+      const errP = pass.length < 6 ? 'Use pelo menos 6 caracteres.' : '';
+      const errP2 = pass2 !== pass ? 'As senhas não conferem.' : '';
+      showError('user', errU); showError('pass', errP); showError('pass2', errP2);
+      if (errU || errP || errP2) { $(errU ? 'user' : errP ? 'pass' : 'pass2').focus(); return; }
+
+      btn.disabled = true;
+      const result = await Auth.register(user, pass);
+
+      if (result === 'exists') {
+        btn.disabled = false;
+        showError('user', 'Esse usuário já existe. Volte ao login.');
+        $('user').focus();
+        return;
+      }
+      if (result !== 'ok') {
+        btn.disabled = false;
+        status.textContent = 'Não foi possível salvar a conta neste navegador.';
+        return;
+      }
+      status.textContent = 'Conta criada! Levando você ao login…';
+      setTimeout(() => location.assign('login.html?cadastrado=1&usuario=' + encodeURIComponent(user)), 1200);
+    });
+  </script>
+</body>
+</html>
