@@ -9,50 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="plain has-robot">
-  <div class="stage">
-    <svg id="scene" class="on" aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <filter id="soft-depth-shadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="-10" dy="18" stdDeviation="22" flood-color="#000000" flood-opacity="0.95"/>
-        </filter>
-      </defs>
-
-      <!-- Robô da tela de login, flutuando no meio da tela (posição ajustada por fit() no script) -->
-      <g id="robot-place" transform="translate(544 450) scale(1.5)">
-        <g class="robot-float">
-          <g transform="translate(-421 -355)" filter="url(#soft-depth-shadow)">
-          <path class="mat" d="M 310 260 L 260 330 L 280 390" fill="none" style="stroke: var(--r-base);" stroke-width="20" stroke-linejoin="round" stroke-linecap="round"/>
-          <circle class="mat" cx="310" cy="260" r="12" style="fill: var(--r-joint);" />
-
-          <path class="mat" d="M 330 400 L 300 480 L 320 560 L 340 560" fill="none" style="stroke: var(--r-base);" stroke-width="22" stroke-linejoin="round" stroke-linecap="round" />
-          <circle class="mat" cx="330" cy="400" r="14" style="fill: var(--r-joint);"/>
-
-          <path class="mat" d="M 370 400 L 420 460 L 390 540 L 410 540" fill="none" style="stroke: var(--r-mid);" stroke-width="24" stroke-linejoin="round" stroke-linecap="round" />
-          <circle class="mat" cx="370" cy="400" r="14" style="fill: var(--r-light);"/>
-          <circle class="mat" cx="420" cy="460" r="12" style="fill: var(--r-light);"/>
-
-          <rect class="mat" x="330" y="375" width="40" height="35" style="fill: var(--r-base);" rx="6" />
-          <line class="mat" x1="335" y1="385" x2="365" y2="385" style="stroke: var(--r-mid);" stroke-width="2"/>
-
-          <path class="mat" d="M 310 250 C 310 230 390 230 390 250 L 410 290 L 380 300 L 370 380 L 330 380 L 320 300 L 290 290 Z" style="fill: var(--r-light); stroke: var(--r-stroke);" stroke-width="2" />
-
-          <path class="mat" d="M 325 170 C 325 130 375 130 375 170 C 380 210 350 230 350 230 C 350 230 320 210 325 170 Z" style="fill: var(--r-mid);" />
-          <path class="mat" d="M 335 175 C 335 150 365 150 365 175 C 365 200 350 215 350 215 C 350 215 335 200 335 175 Z" style="fill: var(--r-stroke);" />
-
-          <rect id="visor-light" x="340" y="180" width="20" height="5" rx="2.5" />
-
-          <g id="right-arm-group">
-            <path id="right-arm" class="mat" d="M 390 260 L 485 280 L 580 250" fill="none" style="stroke: var(--r-light);" stroke-width="22" stroke-linejoin="round" stroke-linecap="round"/>
-            <circle class="mat" cx="390" cy="260" r="14" style="fill: var(--r-mid);" />
-            <circle id="right-elbow" class="mat" cx="485" cy="280" r="12" style="fill: var(--r-mid);" />
-            <circle id="right-hand" class="mat" cx="580" cy="250" r="12" style="fill: var(--r-joint);" />
-          </g>
-          </g>
-        </g>
-      </g>
-    </svg>
-  </div>
+<body class="plain cadastro">
+  <div class="backdrop" aria-hidden="true"></div>
 
   <main class="login">
     <section class="card">
@@ -80,7 +38,7 @@
 
         <button type="submit" class="btn" id="btn">Criar conta</button>
         <p class="status" id="status" aria-live="polite"></p>
-        <p class="alt">Já tem conta? <a href="index.html">Voltar ao login</a></p>
+        <p class="alt">Já tem conta? <a href="login.html">Voltar ao login</a></p>
       </form>
     </section>
   </main>
@@ -89,21 +47,6 @@
   <script>
     const $ = (id) => document.getElementById(id);
     const status = $('status'), btn = $('btn');
-
-    // Enquadra o robô flutuante: no meio-esquerda no desktop, no topo no celular
-    const scene = $('scene'), place = $('robot-place');
-    function fit() {
-      const r = innerWidth / innerHeight, port = r < 1;
-      const W = port ? 520 : 900 * r, H = W / r;
-      const S = port ? 0.6 : 1.5;
-      const cx = port ? W / 2 : W * 0.34, cy = port ? 160 : H * 0.5;
-      scene.setAttribute('viewBox', `0 0 ${W} ${H}`);
-      place.setAttribute('transform', `translate(${cx} ${cy}) scale(${S})`);
-      // reserva o topo para o robô quando o cartão fica embaixo
-      document.documentElement.style.setProperty('--robot-space', ((cy + 220 * S) * innerWidth / W + 16) + 'px');
-    }
-    fit();
-    addEventListener('resize', fit);
 
     const q = new URLSearchParams(location.search);
     if (q.get('usuario')) $('user').value = q.get('usuario');
