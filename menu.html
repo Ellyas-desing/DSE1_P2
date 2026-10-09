@@ -19,7 +19,7 @@
   <script src="auth.js"></script>
   <script>
     const user = Auth.current();
-    if (!user) location.replace('login.html');
+    if (!user) location.replace('index.html');
     document.getElementById('welcome').textContent = 'Bem-vindo(a), ' + user + '!';
     document.getElementById('logout').addEventListener('click', () => { Auth.logout(); location.assign('login.html'); });
   </script>
