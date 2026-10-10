@@ -78,12 +78,12 @@
     const $ = (id) => document.getElementById(id);
 
     const user = Auth.current();
-    if (!user) location.replace('login.html');
+    if (!user) location.replace('index.html');
     $('hello').textContent = 'Olá, ' + user;
     $('logout').addEventListener('click', () => {
       Auth.logout();
       try { sessionStorage.removeItem('sistema'); } catch (e) {}
-      location.assign('login.html');
+      location.assign('index.html');
     });
 
     // ---- Sistema ligado/desligado pela logo ----

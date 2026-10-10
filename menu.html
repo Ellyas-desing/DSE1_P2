@@ -83,7 +83,7 @@
     $('logout').addEventListener('click', () => {
       Auth.logout();
       try { sessionStorage.removeItem('sistema'); } catch (e) {}
-      location.assign('login.html');
+      location.assign('index.html');
     });
 
     // ---- Sistema ligado/desligado pela logo ----
