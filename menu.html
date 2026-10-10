@@ -101,21 +101,6 @@
     <script src="auth.js"></script>
     <script src="page-transitions.js"></script>
     <script>
-      $("logout").addEventListener("click", async () => {
-        $("logout").disabled = true;
-        await PageTransitions.fadeOut();
-
-        Auth.logout();
-        try {
-          sessionStorage.removeItem("sistema");
-        } catch (error) {
-          console.error("Não foi possível limpar o estado do sistema.", error);
-        }
-
-        location.assign("index.html");
-      });
-    </script>
-    <script>
       const $ = (id) => document.getElementById(id);
 
       const user = Auth.current();
@@ -170,6 +155,19 @@
       setCor(
         document.documentElement.dataset.cor === "ambar" ? "ambar" : "azul",
       );
+      $("logout").addEventListener("click", async () => {
+        $("logout").disabled = true;
+        await PageTransitions.fadeOut();
+
+        Auth.logout();
+        try {
+          sessionStorage.removeItem("sistema");
+        } catch (error) {
+          console.error("Não foi possível limpar o estado do sistema.", error);
+        }
+
+        location.assign("index.html");
+      });
     </script>
   </body>
 </html>
