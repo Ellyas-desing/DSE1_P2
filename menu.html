@@ -78,7 +78,7 @@
     const $ = (id) => document.getElementById(id);
 
     const user = Auth.current();
-    if (!user) location.replace('login.html');
+    if (!user) location.replace('index.html');
     $('hello').textContent = 'Olá, ' + user;
     $('logout').addEventListener('click', () => {
       Auth.logout();
