@@ -224,3 +224,143 @@ body.is-loading .loading-overlay { opacity: 1; visibility: visible; pointer-even
   #foreground-group, #visor-light, .loader { animation: none; }
   * { transition: none !important; }
 }
+/* Account Chooser Card */
+.account-chooser {
+  animation: slideIn 0.4s ease-out;
+}
+
+.accounts-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.accounts-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.accounts-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.accounts-list::-webkit-scrollbar-thumb {
+  background: var(--color-border, #ccc);
+  border-radius: 3px;
+}
+
+.accounts-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text, #666);
+}
+
+.account-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.25rem;
+  border: 2px solid var(--color-border, #ddd);
+  border-radius: 8px;
+  background: var(--color-card, #fff);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.account-item:hover {
+  border-color: var(--color-primary, #ffb703);
+  background: var(--color-card-hover, #fafafa);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.account-item:focus {
+  outline: none;
+  border-color: var(--color-primary, #ffb703);
+  box-shadow: 0 0 0 3px rgba(255, 183, 3, 0.2);
+}
+
+.account-item span {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text, #333);
+}
+
+.account-item small {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #666);
+  word-break: break-word;
+}
+
+.btn-secondary {
+  background: var(--color-secondary, #e0e0e0);
+  color: var(--color-text, #333);
+  border: none;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--color-secondary-hover, #d0d0d0);
+}
+
+.btn-secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(224, 224, 224, 0.5);
+}
+
+/* Animação de entrada suave */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsivo para telas pequenas */
+@media (max-width: 600px) {
+  .accounts-list {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .account-item {
+    padding: 1rem;
+  }
+
+  .account-item span {
+    font-size: 1rem;
+  }
+}
+:root {
+  --color-border: #ddd;
+  --color-primary: #ffb703;
+  --color-card: #fff;
+  --color-card-hover: #fafafa;
+  --color-text: #333;
+  --color-text-secondary: #666;
+  --color-secondary: #e0e0e0;
+  --color-secondary-hover: #d0d0d0;
+}
+
+/* Para tema escuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-border: #444;
+    --color-card: #1a1a1a;
+    --color-card-hover: #262626;
+    --color-text: #f0f0f0;
+    --color-text-secondary: #999;
+    --color-secondary: #444;
+    --color-secondary-hover: #555;
+  }
+}

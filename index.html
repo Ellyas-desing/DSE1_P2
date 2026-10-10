@@ -53,7 +53,6 @@
           <ellipse cx="0" cy="207" rx="69" ry="25" fill="none" stroke="#394153" stroke-width="7" transform="rotate(44 0 207)"/>
           <ellipse cx="0" cy="207" rx="69" ry="25" fill="none" stroke="#394153" stroke-width="7" transform="rotate(-44 0 207)"/>
           <ellipse cx="0" cy="207" rx="69" ry="25" fill="none" stroke="#394153" stroke-width="7"/>
-          <!-- Bulbo virado para baixo: rosca presa ao soquete, vidro redondo apontando para o chão -->
           <path id="bulb-glass" transform="translate(0 414) scale(1 -1)" d="M 0 163 C -30 163 -39 198 -26 222 C -18 238 -11 243 -11 252 L 11 252 C 11 243 18 238 26 222 C 39 198 30 163 0 163 Z" stroke="#49556a" stroke-width="2"/>
           <rect transform="translate(0 414) scale(1 -1)" x="-13" y="250" width="26" height="9" rx="3" fill="#171b25"/>
           <path id="filament" d="M -11 213 L -4 225 L 4 213 L 11 225" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -106,7 +105,7 @@
   </div>
 
   <main class="login">
-    <section class="card">
+    <section class="card" id="login-card">
       <h2>LOGIN</h2>
 
       <form id="form" novalidate>
@@ -138,6 +137,13 @@
       </form>
     </section>
 
+    <!-- Card de "Escolher Conta" -->
+    <section class="card account-chooser" id="account-chooser" style="display: none;">
+      <h2>Escolher Conta</h2>
+      <div class="accounts-list" id="accounts-list"></div>
+      <button type="button" class="btn btn-secondary" id="back-to-login">Voltar</button>
+    </section>
+
     <aside class="welcome-message">
       <span>Faça parte</span>
       <span>hoje mesmo</span>
@@ -155,10 +161,15 @@
   <script>
     const form = document.getElementById('form');
     const userInput = document.getElementById('user');
+    const emailInput = document.getElementById('email');
     const pass = document.getElementById('pass');
     const toggle = document.getElementById('toggle');
     const btn = document.getElementById('btn');
     const status = document.getElementById('status');
+    const loginCard = document.getElementById('login-card');
+    const accountChooser = document.getElementById('account-chooser');
+    const accountsList = document.getElementById('accounts-list');
+    const backToLoginBtn = document.getElementById('back-to-login');
 
     // Vindo do cadastro: já preenche o usuário
     const params = new URLSearchParams(location.search);
@@ -189,6 +200,40 @@
     ['user', 'pass'].forEach(id =>
       document.getElementById(id).addEventListener('input', () => showError(id, ''))
     );
+
+    function showAccountChooser(email) {
+      const allAccounts = Auth.getByEmail(email);
+      if (allAccounts.length === 0) return false;
+
+      accountsList.innerHTML = '';
+      allAccounts.forEach(account => {
+        const accountBtn = document.createElement('button');
+        accountBtn.type = 'button';
+        accountBtn.className = 'account-item';
+        accountBtn.innerHTML = `<span>${account.user}</span><small>${account.email}</small>`;
+        accountBtn.addEventListener('click', () => {
+          userInput.value = account.user;
+          pass.focus();
+          switchToLogin();
+        });
+        accountsList.appendChild(accountBtn);
+      });
+
+      switchToChooser();
+      return true;
+    }
+
+    function switchToLogin() {
+      loginCard.style.display = '';
+      accountChooser.style.display = 'none';
+    }
+
+    function switchToChooser() {
+      loginCard.style.display = 'none';
+      accountChooser.style.display = '';
+    }
+
+    backToLoginBtn.addEventListener('click', switchToLogin);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();

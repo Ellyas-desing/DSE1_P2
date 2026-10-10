@@ -16,6 +16,7 @@ const Auth = (() => {
 
  return {
  find: (u) => all().find((a) => a.id === norm(u)) || null,
+ getByEmail: (email) => all().filter((a) => a.email === norm(email)),
  async register(user, email, pass) {
  const list = all();
  if (list.some((a) => a.id === norm(user))) return 'exists';
