@@ -1,161 +1,175 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body class="plain cadastro">
-    <div class="backdrop" aria-hidden="true"></div>
-
-    <main class="login">
-      <section class="card">
-        <h2>CADASTRO</h2>
-        <p class="lead">
-          Ainda não encontramos sua conta. Crie uma para entrar no time.
-        </p>
-
-        <form id="form" novalidate>
-          <div class="field" id="f-email">
-            <label for="user">Email de usuário</label>
-            <div class="input-wrap">
-              <input
-                id="email"
-                type="email"
-                autocomplete="email"
-                placeholder="Escolha um email"
-              />
-            </div>
-            <p class="error" aria-live="polite"></p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="plain cadastro">
+  <div class="backdrop" aria-hidden="true"></div>
+  
+  <main class="login">
+    <section class="card">
+      <h2>CADASTRO</h2>
+      <p class="lead">Ainda não encontramos sua conta. Crie uma para entrar no time.</p>
+      
+      <form id="signup-form" novalidate>
+        <div class="field" id="f-email">
+          <label for="email">Email</label>
+          <div class="input-wrap">
+            <input id="email" type="email" autocomplete="email" placeholder="seu@email.com">
           </div>
-          <div class="field" id="f-user">
-            <label for="user">Nome de usuário</label>
-            <div class="input-wrap">
-              <input
-                id="user"
-                type="text"
-                autocomplete="username"
-                placeholder="Escolha um usuário"
-              />
-            </div>
-            <p class="error" aria-live="polite"></p>
+          <p class="error" aria-live="polite"></p>
+        </div>
+        
+        <div class="field" id="f-user">
+          <label for="user">Nome de usuário</label>
+          <div class="input-wrap">
+            <input id="user" type="text" autocomplete="username" placeholder="usuario_123">
           </div>
-          <div class="field" id="f-pass">
-            <label for="pass">Senha</label>
-            <div class="input-wrap">
-              <input
-                id="pass"
-                type="password"
-                autocomplete="new-password"
-                placeholder="Mínimo de 6 caracteres"
-              />
-            </div>
-            <p class="error" aria-live="polite"></p>
+          <p class="error" aria-live="polite"></p>
+        </div>
+        
+        <div class="field" id="f-pass">
+          <label for="pass">Senha</label>
+          <div class="input-wrap">
+            <input id="pass" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
           </div>
-          <div class="field" id="f-pass2">
-            <label for="pass2">Confirmar senha</label>
-            <div class="input-wrap">
-              <input
-                id="pass2"
-                type="password"
-                autocomplete="new-password"
-                placeholder="Repita a senha"
-              />
-            </div>
-            <p class="error" aria-live="polite"></p>
+          <p class="error" aria-live="polite"></p>
+        </div>
+        
+        <div class="field" id="f-pass2">
+          <label for="pass2">Confirmar senha</label>
+          <div class="input-wrap">
+            <input id="pass2" type="password" autocomplete="new-password" placeholder="Repita a senha">
           </div>
-
-          <label class="check"
-            ><input type="checkbox" id="show" /> Mostrar senhas</label
-          >
-
-          <button type="submit" class="btn" id="btn">Criar conta</button>
-          <p class="status" id="status" aria-live="polite"></p>
-          <p class="alt">
-            Já tem conta? <a href="index.html">Voltar ao login</a>
-          </p>
-        </form>
-      </section>
-    </main>
-
-    <script src="auth.js"></script>
-    <script>
+          <p class="error" aria-live="polite"></p>
+        </div>
+        
+        <label class="check">
+          <input type="checkbox" id="show-passwords"> Mostrar senhas
+        </label>
+        
+        <button type="submit" class="btn" id="btn-signup">Criar conta</button>
+        <p class="status" id="status-signup" aria-live="polite"></p>
+        <p class="alt">Já tem conta? <a href="index.html">Voltar ao login</a></p>
+      </form>
+    </section>
+  </main>
+  
+  <div data-page-transition></div>
+  
+  <script src="auth.js"></script>
+  <script src="form-handler.js"></script>
+  <script src="page-transitions.js"></script>
+  <script>
+    (() => {
       const $ = (id) => document.getElementById(id);
-      const status = $("status"),
-        btn = $("btn");
-
-      const q = new URLSearchParams(location.search);
-      if (q.get("usuario")) $("user").value = q.get("usuario");
-
-      function showError(id, msg) {
-        const field = $(id).closest(".field");
-        field.classList.toggle("invalid", !!msg);
-        field.querySelector(".error").textContent = msg || "";
+      
+      // DOM Elements
+      const form = $('signup-form');
+      const emailInput = $('email');
+      const userInput = $('user');
+      const passInput = $('pass');
+      const pass2Input = $('pass2');
+      const showPasswordsCheckbox = $('show-passwords');
+      const btnSignup = $('btn-signup');
+      const statusMsg = $('status-signup');
+      
+      // Initialize
+      function initialize() {
+        setupFormValidation();
+        setupPasswordToggle();
+        handleURLParams();
       }
-      ["user", "email", "pass", "pass2"].forEach((id) =>
-        $(id).addEventListener("input", () => showError(id, "")),
-      );
-
-      $("show").addEventListener("change", (e) => {
-        $("pass").type = $("pass2").type = e.target.checked
-          ? "text"
-          : "password";
-      });
-
-      $("form").addEventListener("submit", async (e) => {
+      
+      function setupFormValidation() {
+        FormHandler.setupFieldListeners(['email', 'user', 'pass', 'pass2']);
+        form.addEventListener('submit', handleSignupSubmit);
+      }
+      
+      function setupPasswordToggle() {
+        showPasswordsCheckbox.addEventListener('change', (e) => {
+          const type = e.target.checked ? 'text' : 'password';
+          passInput.type = type;
+          pass2Input.type = type;
+        });
+      }
+      
+      async function handleSignupSubmit(e) {
         e.preventDefault();
-        status.textContent = "";
-        const user = $("user").value.trim(),
-          email = $("email").value.trim(),
-          pass = $("pass").value,
-          pass2 = $("pass2").value;
-
-        const errU = user.length < 3 ? "Use pelo menos 3 caracteres." : "";
-        const errE = !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
-          ? "Email inválido."
-          : "";
-        const errP = pass.length < 6 ? "Use pelo menos 6 caracteres." : "";
-        const errP2 = pass2 !== pass ? "As senhas não conferem." : "";
-        showError("user", errU);
-        showError("email", errE);
-        showError("pass", errP);
-        showError("pass2", errP2);
-        if (errU || errE || errP || errP2) {
-          $(errU ? "user" : errE ? "email" : errP ? "pass" : "pass2").focus();
+        statusMsg.textContent = '';
+        
+        // Validate
+        const emailValid = FormHandler.validateField('email', FormHandler.validators.email);
+        const userValid = FormHandler.validateField('user', FormHandler.validators.username);
+        const passValid = FormHandler.validateField('pass', FormHandler.validators.password);
+        const pass2Valid = FormHandler.validateField('pass2', (val) => {
+          const pass = passInput.value;
+          return val === pass ? '' : 'As senhas não conferem.';
+        });
+        
+        if (!emailValid || !userValid || !passValid || !pass2Valid) {
+          const firstInvalid = FormHandler.getFirstErrorField([
+            { fieldId: 'email', valid: emailValid },
+            { fieldId: 'user', valid: userValid },
+            { fieldId: 'pass', valid: passValid },
+            { fieldId: 'pass2', valid: pass2Valid }
+          ]);
+          $(firstInvalid).focus();
           return;
         }
-
-        btn.disabled = true;
-        const result = await Auth.register(user, email, pass);
-
-        if (result === "exists") {
-          btn.disabled = false;
-          showError("user", "Esse usuário já existe. Volte ao login.");
-          $("user").focus();
+        
+        btnSignup.disabled = true;
+        btnSignup.textContent = 'Criando conta…';
+        
+        const email = emailInput.value.trim();
+        const username = userInput.value.trim();
+        const password = passInput.value;
+        
+        const result = await Auth.register(username, email, password);
+        
+        if (result === 'exists') {
+          btnSignup.disabled = false;
+          btnSignup.textContent = 'Criar conta';
+          FormHandler.showError('user', 'Esse usuário já existe.');
+          userInput.focus();
           return;
         }
-        if (result !== "ok") {
-          btn.disabled = false;
-          status.textContent =
-            "Não foi possível salvar a conta neste navegador.";
+        
+        if (result === 'email-exists') {
+          btnSignup.disabled = false;
+          btnSignup.textContent = 'Criar conta';
+          FormHandler.showError('email', 'Este email já está cadastrado.');
+          emailInput.focus();
           return;
         }
-        status.textContent = "Conta criada! Levando você ao login…";
-        setTimeout(
-          () =>
-            location.assign(
-              "login.html?cadastrado=1&usuario=" + encodeURIComponent(user),
-            ),
-          1200,
-        );
-      });
-    </script>
-  </body>
+        
+        if (result !== 'ok') {
+          btnSignup.disabled = false;
+          btnSignup.textContent = 'Criar conta';
+          statusMsg.textContent = 'Erro ao salvar conta. Tente novamente.';
+          return;
+        }
+        
+        statusMsg.textContent = 'Conta criada! Levando você ao login…';
+        setTimeout(() => {
+          window.location.href = 'index.html?cadastrado=1&usuario=' + encodeURIComponent(username);
+        }, 1200);
+      }
+      
+      function handleURLParams() {
+        const params = new URLSearchParams(location.search);
+        if (params.get('usuario')) userInput.value = params.get('usuario');
+      }
+      
+      initialize();
+    })();
+  </script>
+</body>
 </html>
