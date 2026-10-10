@@ -4,24 +4,111 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Menu</title>
+  <script>
+    // aplica a cor escolhida antes de desenhar a página (evita piscar)
+    try { document.documentElement.dataset.cor = localStorage.getItem('menu-cor') || 'azul'; } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="plain">
-  <!-- Página provisória: substitua pelo seu menu real, mantendo o redirecionamento do login para "menu.html". -->
-  <main class="login">
-    <section class="card">
-      <h2>MENU</h2>
-      <p class="lead" id="welcome"></p>
-      <button class="btn" id="logout">Sair</button>
+<body class="menu">
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <!-- Cabeçalho: logo interativa no centro, botão de texto ao lado -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="hello" id="hello"></span>
+      <button type="button" class="text-btn" id="logout">Sair</button>
+    </div>
+
+    <button type="button" class="logo" id="logo" aria-pressed="false" aria-label="Logo: ligar ou desligar o sistema">
+      <svg viewBox="310 120 80 120" aria-hidden="true">
+        <path class="head" d="M 325 170 C 325 130 375 130 375 170 C 380 210 350 230 350 230 C 350 230 320 210 325 170 Z"/>
+        <path class="face" d="M 335 175 C 335 150 365 150 365 175 C 365 200 350 215 350 215 C 350 215 335 200 335 175 Z"/>
+        <rect class="visor" x="340" y="180" width="20" height="5" rx="2.5"/>
+      </svg>
+    </button>
+
+    <nav class="topbar-right">
+      <a class="text-btn" href="informations.html">Informações</a>
+    </nav>
+  </header>
+
+  <main class="menu-main">
+    <p class="hint" id="hint" aria-live="polite">Toque na logo para ligar o sistema.</p>
+
+    <!-- 4 cards em CSS grid, de tamanhos diferentes. Troque títulos e textos à vontade. -->
+    <section class="tiles" id="tiles" aria-label="Atalhos do menu">
+      <article class="tile tile-1">
+        <span class="tile-num">01</span>
+        <h2>Meu painel</h2>
+        <p>Resumo da sua atividade, avisos e próximos passos no time.</p>
+      </article>
+      <article class="tile tile-2">
+        <span class="tile-num">02</span>
+        <h2>Equipe</h2>
+        <p>Quem faz parte do time.</p>
+      </article>
+      <article class="tile tile-3">
+        <span class="tile-num">03</span>
+        <h2>Projetos</h2>
+        <p>Acompanhe o que está em andamento.</p>
+      </article>
+      <article class="tile tile-4">
+        <span class="tile-num">04</span>
+        <h2>Configurações</h2>
+        <p>Preferências da conta e do sistema.</p>
+      </article>
     </section>
   </main>
+
+  <!-- Rodapé: botão que alterna entre as duas cores -->
+  <footer class="foot">
+    <button type="button" class="color-toggle" id="color" aria-label="Alternar a cor do tema">
+      <span class="swatch swatch-azul" aria-hidden="true"></span>
+      <span class="swatch swatch-ambar" aria-hidden="true"></span>
+      <span id="color-label">Cor: Azul</span>
+    </button>
+  </footer>
+
   <script src="auth.js"></script>
   <script>
+    const $ = (id) => document.getElementById(id);
+
     const user = Auth.current();
-    if (!user) location.replace('index.html');
-    document.getElementById('welcome').textContent = 'Bem-vindo(a), ' + user + '!';
-    document.getElementById('logout').addEventListener('click', () => { Auth.logout(); location.assign('login.html'); });
+    if (!user) location.replace('login.html');
+    $('hello').textContent = 'Olá, ' + user;
+    $('logout').addEventListener('click', () => {
+      Auth.logout();
+      try { sessionStorage.removeItem('sistema'); } catch (e) {}
+      location.assign('login.html');
+    });
+
+    // ---- Sistema ligado/desligado pela logo ----
+    const logo = $('logo'), tiles = $('tiles'), hint = $('hint');
+    function setSystem(on) {
+      document.body.classList.toggle('on', on);
+      logo.setAttribute('aria-pressed', on);
+      tiles.inert = !on;
+      hint.textContent = on ? 'Sistema ligado. Toque na logo para desligar.' : 'Toque na logo para ligar o sistema.';
+      try { sessionStorage.setItem('sistema', on ? '1' : '0'); } catch (e) {}
+    }
+    logo.addEventListener('click', () => setSystem(!document.body.classList.contains('on')));
+    let saved = null;
+    try { saved = sessionStorage.getItem('sistema'); } catch (e) {}
+    setSystem(saved === '1');
+
+    // ---- Botão que alterna entre as duas cores ----
+    function setCor(cor) {
+      document.documentElement.dataset.cor = cor;
+      $('color-label').textContent = 'Cor: ' + (cor === 'ambar' ? 'Âmbar' : 'Azul');
+      try { localStorage.setItem('menu-cor', cor); } catch (e) {}
+    }
+    $('color').addEventListener('click', () =>
+      setCor(document.documentElement.dataset.cor === 'ambar' ? 'azul' : 'ambar'));
+    setCor(document.documentElement.dataset.cor === 'ambar' ? 'ambar' : 'azul');
   </script>
 </body>
 </html>
