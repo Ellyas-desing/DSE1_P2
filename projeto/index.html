@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&family=Unbounded:wght@800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/@vectoricons/atlas-icons@latest/packs/medical/style.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="stage">
@@ -34,17 +34,17 @@
           <feDropShadow dx="-15" dy="20" stdDeviation="15" flood-color="#000000" flood-opacity="0.95"/>
         </filter>
       </defs>
-      
+
       <polygon id="light-beam" points="800,216 -260,800 1540,800" fill="url(#beam-grad)" />
       <circle id="core-glow" cx="800" cy="216" r="145" fill="url(#lamp-glow)" pointer-events="none"/>
-      
+
       <g id="lamp-wrapper" transform="translate(800, 0)">
         <rect x="-62" y="0" width="124" height="12" rx="6" fill="url(#metal)"/>
         <rect x="-23" y="9" width="46" height="16" rx="7" fill="#151515"/>
         <line x1="0" y1="24" x2="0" y2="116" stroke="#151515" stroke-width="5"/>
         <rect x="-19" y="112" width="38" height="28" rx="7" fill="url(#metal)"/>
         <path d="M -25 139 L 25 139 L 16 151 L -16 151 Z" fill="#111"/>
-        
+
         <g aria-label="Lâmpada pendente clássica">
           <circle cx="0" cy="207" r="69" fill="rgb(10 12 20 / 0.68)" stroke="#30394a" stroke-width="3"/>
           <ellipse cx="0" cy="207" rx="69" ry="25" fill="none" stroke="#394153" stroke-width="7" transform="rotate(44 0 207)"/>
@@ -55,7 +55,7 @@
           <path id="filament" d="M -11 213 L -4 225 L 4 213 L 11 225" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </g>
       </g>
-      
+
       <g id="wall-switch" transform="translate(580, 276)">
         <rect x="0" y="0" width="44" height="62" rx="6" fill="#d5d9df" stroke="#70798a" stroke-width="2"/>
         <rect x="14" y="10" width="16" height="41" rx="5" fill="#252b36"/>
@@ -65,7 +65,7 @@
         <circle cx="7" cy="54" r="2" fill="#737d8e"/>
         <circle cx="37" cy="54" r="2" fill="#737d8e"/>
       </g>
-      
+
       <g id="foreground-group">
         <g id="robot-scale" tabindex="0" role="button" aria-pressed="false" aria-label="Robô: toque para acionar o interruptor da lâmpada" transform="translate(-210, -50) scale(1.4)" filter="url(#depth-shadow)">
           <rect x="250" y="120" width="360" height="460" fill="transparent"/>
@@ -92,19 +92,19 @@
       </g>
     </svg>
   </div>
-  
+
   <main class="login">
     <section class="card" id="login-card">
       <h2>LOGIN</h2>
       <form id="login-form" novalidate>
-        <div class="field" id="f-user">
-          <label for="user">Nome de usuário</label>
+        <div class="field" id="f-email">
+          <label for="email">Email</label>
           <div class="input-wrap">
-            <input id="user" name="user" type="text" autocomplete="username" placeholder="Digite seu usuário">
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="seu@email.com">
           </div>
           <p class="error" aria-live="polite"></p>
         </div>
-        
+
         <div class="field" id="f-pass">
           <label for="pass">Senha</label>
           <div class="input-wrap">
@@ -117,19 +117,19 @@
           </div>
           <p class="error" aria-live="polite"></p>
         </div>
-        
+
         <button type="submit" class="btn" id="btn-login">Confirmar</button>
         <p class="status" id="status-login" aria-live="polite"></p>
-        <p class="alt">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+        <p class="alt">Não tem conta? <a href="html/cadastro.html">Cadastre-se</a></p>
       </form>
     </section>
-    
+
     <section class="card account-chooser" id="account-chooser" style="display: none;">
       <h2>Escolher Conta</h2>
       <div class="accounts-list" id="accounts-list"></div>
       <button type="button" class="btn btn-secondary" id="back-to-login">Voltar</button>
     </section>
-    
+
     <aside class="welcome-message">
       <span>Faça parte</span>
       <span>hoje mesmo</span>
@@ -137,24 +137,27 @@
       <span>aliado do futuro.</span>
     </aside>
   </main>
-  
+
   <div class="loading-overlay" id="loading-overlay" role="status" aria-live="polite" aria-hidden="true">
     <span class="loader" aria-hidden="true"></span>
     <p>Preparando seu acesso…</p>
   </div>
-  
+
   <div data-page-transition></div>
-  
-  <script src="auth.js"></script>
-  <script src="form-handler.js"></script>
-  <script src="page-transitions.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/form-handler.js"></script>
+  <script src="js/page-transitions.js"></script>
   <script>
     (() => {
       const $ = (id) => document.getElementById(id);
-      
+
       // DOM Elements
       const form = $('login-form');
-      const userInput = $('user');
+      const emailInput = $('email');
       const passInput = $('pass');
       const toggleBtn = $('toggle-pass');
       const btnLogin = $('btn-login');
@@ -164,7 +167,7 @@
       const accountsList = $('accounts-list');
       const backBtn = $('back-to-login');
       const loadingOverlay = $('loading-overlay');
-      
+
       // SVG Animation
       const scene = $('scene');
       const robot = $('robot-scale');
@@ -173,9 +176,9 @@
       const hand = $('right-hand');
       const switchHandle = $('switch-handle');
       const card = document.querySelector('.card');
-      
+
       let pulled = false;
-      
+
       // Initialize
       function initialize() {
         setupUI();
@@ -183,95 +186,93 @@
         setupRobotAnimation();
         handleURLParams();
       }
-      
+
       function setupUI() {
         card.inert = true;
-        
+
         toggleBtn.addEventListener('click', () => {
           const show = passInput.type === 'password';
           passInput.type = show ? 'text' : 'password';
           toggleBtn.classList.toggle('is-visible', show);
           toggleBtn.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
         });
-        
+
         backBtn.addEventListener('click', switchToLogin);
       }
-      
+
       function setupFormValidation() {
-        FormHandler.setupFieldListeners(['user', 'pass']);
-        
+        FormHandler.setupFieldListeners(['email', 'pass']);
+
         form.addEventListener('submit', handleLoginSubmit);
       }
-      
+
       async function handleLoginSubmit(e) {
         e.preventDefault();
         statusMsg.textContent = '';
-        
-        const userValid = FormHandler.validateField('user', FormHandler.validators.username);
+
+        const emailValid = FormHandler.validateField('email', FormHandler.validators.email);
         const passValid = FormHandler.validateField('pass', (val) => val ? '' : 'Digite sua senha.');
-        
-        if (!userValid || !passValid) {
-          $(!userValid ? 'user' : 'pass').focus();
+
+        if (!emailValid || !passValid) {
+          $(!emailValid ? 'email' : 'pass').focus();
           return;
         }
-        
-        const username = userInput.value.trim();
+
         btnLogin.disabled = true;
         btnLogin.textContent = 'Verificando…';
-        
-        const account = Auth.find(username);
-        
-        if (!account) {
-          statusMsg.textContent = 'Conta não encontrada. Levando você ao cadastro…';
-          setTimeout(() => {
-            window.location.href = 'cadastro.html?usuario=' + encodeURIComponent(username);
-          }, 1200);
-          return;
-        }
-        
-        if (!(await Auth.verify(account, passInput.value))) {
+
+        const result = await Auth.login(emailInput.value.trim(), passInput.value);
+
+        if (result !== 'ok') {
           btnLogin.disabled = false;
           btnLogin.textContent = 'Confirmar';
-          FormHandler.showError('pass', 'Senha incorreta.');
+          const msgs = {
+            'invalid-credential': 'Email ou senha incorretos.',
+            'invalid-email': 'Email inválido.',
+            'too-many': 'Muitas tentativas. Aguarde um pouco e tente de novo.',
+            'network': 'Sem conexão. Verifique sua internet.',
+            'disabled': 'Esta conta foi desativada.',
+            'error': 'Não foi possível entrar. Tente novamente.'
+          };
+          FormHandler.showError('pass', msgs[result] || msgs.error);
           passInput.focus();
           return;
         }
-        
-        Auth.login(account.user);
+
         btnLogin.textContent = 'Entrando…';
         statusMsg.textContent = 'Acesso confirmado. Redirecionando…';
         setTimeout(finishLogin, 700);
       }
-      
+
       function finishLogin() {
         document.body.classList.add('is-loading');
         loadingOverlay.setAttribute('aria-hidden', 'false');
         setTimeout(() => {
-          window.location.href = 'menu.html';
+          PageTransitions.navigate('html/menu.html');
         }, 1400);
       }
-      
+
       function switchToLogin() {
         loginCard.style.display = '';
         accountChooser.style.display = 'none';
       }
-      
+
       function handleURLParams() {
         const params = new URLSearchParams(location.search);
-        if (params.get('usuario')) userInput.value = params.get('usuario');
+        if (params.get('email')) emailInput.value = params.get('email');
         if (params.get('cadastrado')) statusMsg.textContent = 'Conta criada! Ligue a luz e entre.';
       }
-      
+
       // Robot Animation
       function setupRobotAnimation() {
         fitViewBox();
         window.addEventListener('resize', fitViewBox);
-        
+
         robot.addEventListener('pointerdown', () => {
           pulled = true;
           poseRobot(true);
         });
-        
+
         robot.addEventListener('pointerup', handleRobotRelease);
         ['pointerleave', 'pointercancel'].forEach(type => {
           robot.addEventListener(type, () => {
@@ -281,7 +282,7 @@
             }
           });
         });
-        
+
         robot.addEventListener('keydown', (e) => {
           if (e.key !== 'Enter' && e.key !== ' ') return;
           e.preventDefault();
@@ -291,17 +292,17 @@
             toggleLight();
           }, 150);
         });
-        
+
         robot.addEventListener('mousedown', (e) => e.preventDefault());
       }
-      
+
       function handleRobotRelease() {
         if (!pulled) return;
         pulled = false;
         poseRobot(false);
         toggleLight();
       }
-      
+
       function fitViewBox() {
         const r = innerWidth / innerHeight;
         const W = Math.max(530, 600 * r);
@@ -310,13 +311,13 @@
         const y0 = r < 1 ? -90 : 0;
         scene.setAttribute('viewBox', `${x0} ${y0} ${W} ${H}`);
       }
-      
+
       function poseRobot(down) {
         arm.setAttribute('d', down ? 'M 390 260 L 485 300 L 580 270' : 'M 390 260 L 485 280 L 580 250');
         elbow.setAttribute('cy', down ? 300 : 280);
         hand.setAttribute('cy', down ? 270 : 250);
       }
-      
+
       function toggleLight() {
         const on = !scene.classList.contains('on');
         scene.classList.toggle('on', on);
@@ -325,7 +326,7 @@
         switchHandle.setAttribute('y', on ? '10' : '27');
         card.inert = !on;
       }
-      
+
       initialize();
     })();
   </script>

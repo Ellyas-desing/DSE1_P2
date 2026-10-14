@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../css/style.css" />
   </head>
   <body class="menu">
     <div class="backdrop" aria-hidden="true"></div>
@@ -98,20 +98,31 @@
       </button>
     </footer>
 
-    <script src="auth.js"></script>
-    <script src="page-transitions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/auth.js"></script>
+    <script src="../js/page-transitions.js"></script>
     <script>
       const $ = (id) => document.getElementById(id);
 
-      const user = Auth.current();
-      if (!user) location.replace("index.html");
-      $("hello").textContent = "Olá, " + user;
-      $("logout").addEventListener("click", () => {
-        Auth.logout();
+      Auth.require("../index.html").then((u) => {
+      document.getElementById("hello").textContent = "Olá, " + Auth.nameOf(u);
+    });
+
+      // ---- Sair (com transição) ----
+      $("logout").addEventListener("click", async () => {
+        $("logout").disabled = true;
+        await PageTransitions.fadeOut();
+
+        await Auth.logout();
         try {
           sessionStorage.removeItem("sistema");
-        } catch (e) {}
-        location.assign("index.html");
+        } catch (error) {
+          console.error("Não foi possível limpar o estado do sistema.", error);
+        }
+
+        location.assign("../index.html");
       });
 
       // ---- Sistema ligado/desligado pela logo ----
@@ -155,19 +166,6 @@
       setCor(
         document.documentElement.dataset.cor === "ambar" ? "ambar" : "azul",
       );
-      $("logout").addEventListener("click", async () => {
-        $("logout").disabled = true;
-        await PageTransitions.fadeOut();
-
-        Auth.logout();
-        try {
-          sessionStorage.removeItem("sistema");
-        } catch (error) {
-          console.error("Não foi possível limpar o estado do sistema.", error);
-        }
-
-        location.assign("index.html");
-      });
     </script>
   </body>
 </html>

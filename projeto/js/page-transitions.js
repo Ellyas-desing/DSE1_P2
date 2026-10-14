@@ -5,7 +5,7 @@
 const PageTransitions = (() => {
   const FADE_DURATION = 500; // ms
   const transitionEl = document.querySelector('[data-page-transition]') || createTransitionEl();
-  
+
   function createTransitionEl() {
     const el = document.createElement('div');
     el.setAttribute('data-page-transition', '');
@@ -21,7 +21,7 @@ const PageTransitions = (() => {
     document.body.appendChild(el);
     return el;
   }
-  
+
   function fadeOut() {
     return new Promise((resolve) => {
       transitionEl.style.pointerEvents = 'auto';
@@ -29,58 +29,59 @@ const PageTransitions = (() => {
       setTimeout(resolve, FADE_DURATION);
     });
   }
-  
+
   function fadeIn() {
     transitionEl.style.opacity = '0';
     transitionEl.style.pointerEvents = 'none';
   }
-  
+
+  // Faz o fade e navega (use no lugar de window.location.href)
+  async function navigate(href) {
+    await fadeOut();
+    window.location.href = href;
+  }
+
   // Intercepta navegação interna
   function setupPageLinks() {
-    document.addEventListener('click', async (e) => {
+    document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href]');
       if (!link) return;
-      
+
       const href = link.getAttribute('href');
-      
+
       // Ignora links externos, âncoras e atributos especiais
       if (
         !href ||
-        href.startsWith('http') ||
-        href.startsWith('#') ||
-        href.startsWith('javascript:') ||
+        /^(https?:|mailto:|tel:|javascript:|#)/.test(href) ||
         link.target === '_blank' ||
-        link.hasAttribute('data-no-transition')
+        link.hasAttribute('download') ||
+        link.hasAttribute('data-no-transition') ||
+        e.ctrlKey || e.metaKey || e.shiftKey || e.altKey
       ) {
         return;
       }
-      
+
       e.preventDefault();
-      await fadeOut();
-      window.location.href = href;
+      navigate(href);
     });
   }
-  
-  // Executa ao carregar página
+
+  // Ao voltar pelo botão "voltar" do navegador (cache), remove o overlay
+  function setupPageShow() {
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) fadeIn();
+    });
+  }
+
   function initialize() {
     fadeIn();
     setupPageLinks();
+    setupPageShow();
   }
-  
-  // Executa ao descarregar (para suavizar saída)
-  function setupBeforeUnload() {
-    window.addEventListener('beforeunload', () => {
-      fadeOut();
-    });
-  }
-  
-  return {
-    initialize,
-    fadeOut,
-    fadeIn,
-    setupBeforeUnload
-  };
+
+  return { initialize, fadeOut, fadeIn, navigate };
 })();
+
 // Auto-inicializar quando o DOM estiver pronto
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => PageTransitions.initialize());

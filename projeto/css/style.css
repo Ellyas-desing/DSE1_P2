@@ -1,7 +1,7 @@
-/* CSS Otimizado - Login & Cadastro */
+/* CSS Otimizado - Login, Cadastro & Menu */
 @font-face {
   font-family: "Alvarosa";
-  src: local("Alvarosa Light"), url("fonts/Alvarosa-Light.woff2") format("woff2"), url("fonts/Alvarosa-Light.otf") format("opentype");
+  src: local("Alvarosa Light"), url("../fonts/Alvarosa-Light.woff2") format("woff2"), url("../fonts/Alvarosa-Light.otf") format("opentype");
   font-weight: 300 400;
   font-style: normal;
   font-display: swap;
@@ -278,13 +278,6 @@ body.is-loading .loading-overlay { opacity: 1; visibility: visible; pointer-even
   #foreground-group, #visor-light, .loader { animation: none; }
   * { transition: none !important; }
 }
-/* Cole no FINAL do seu style.css */
-
-/* Fundo desfocado (pode pular este bloco se o seu style.css já tem .backdrop) */
-.backdrop { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: #05070d; }
-.backdrop::before, .backdrop::after { content: ""; position: absolute; border-radius: 50%; filter: blur(90px); }
-.backdrop::before { width: 55vmax; height: 55vmax; left: -15vmax; top: -22vmax; background: rgb(40 90 190 / 0.4); }
-.backdrop::after { width: 50vmax; height: 50vmax; right: -14vmax; bottom: -24vmax; background: rgb(24 60 140 / 0.34); }
 
 /* ================= Menu ================= */
 .menu {

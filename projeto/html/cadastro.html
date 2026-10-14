@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="plain cadastro">
   <div class="backdrop" aria-hidden="true"></div>
-  
+
   <main class="login">
     <section class="card">
       <h2>CADASTRO</h2>
       <p class="lead">Ainda não encontramos sua conta. Crie uma para entrar no time.</p>
-      
+
       <form id="signup-form" novalidate>
         <div class="field" id="f-email">
           <label for="email">Email</label>
@@ -26,7 +26,7 @@
           </div>
           <p class="error" aria-live="polite"></p>
         </div>
-        
+
         <div class="field" id="f-user">
           <label for="user">Nome de usuário</label>
           <div class="input-wrap">
@@ -34,7 +34,7 @@
           </div>
           <p class="error" aria-live="polite"></p>
         </div>
-        
+
         <div class="field" id="f-pass">
           <label for="pass">Senha</label>
           <div class="input-wrap">
@@ -42,7 +42,7 @@
           </div>
           <p class="error" aria-live="polite"></p>
         </div>
-        
+
         <div class="field" id="f-pass2">
           <label for="pass2">Confirmar senha</label>
           <div class="input-wrap">
@@ -50,27 +50,32 @@
           </div>
           <p class="error" aria-live="polite"></p>
         </div>
-        
+
         <label class="check">
           <input type="checkbox" id="show-passwords"> Mostrar senhas
         </label>
-        
+
         <button type="submit" class="btn" id="btn-signup">Criar conta</button>
         <p class="status" id="status-signup" aria-live="polite"></p>
-        <p class="alt">Já tem conta? <a href="index.html">Voltar ao login</a></p>
+        <p class="alt">Já tem conta? <a href="../index.html">Voltar ao login</a></p>
       </form>
     </section>
   </main>
-  
+
   <div data-page-transition></div>
-  
-  <script src="auth.js"></script>
-  <script src="form-handler.js"></script>
-  <script src="page-transitions.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/form-handler.js"></script>
+  <script src="../js/page-transitions.js"></script>
   <script>
     (() => {
       const $ = (id) => document.getElementById(id);
-      
+
       // DOM Elements
       const form = $('signup-form');
       const emailInput = $('email');
@@ -80,19 +85,19 @@
       const showPasswordsCheckbox = $('show-passwords');
       const btnSignup = $('btn-signup');
       const statusMsg = $('status-signup');
-      
+
       // Initialize
       function initialize() {
         setupFormValidation();
         setupPasswordToggle();
         handleURLParams();
       }
-      
+
       function setupFormValidation() {
         FormHandler.setupFieldListeners(['email', 'user', 'pass', 'pass2']);
         form.addEventListener('submit', handleSignupSubmit);
       }
-      
+
       function setupPasswordToggle() {
         showPasswordsCheckbox.addEventListener('change', (e) => {
           const type = e.target.checked ? 'text' : 'password';
@@ -100,11 +105,11 @@
           pass2Input.type = type;
         });
       }
-      
+
       async function handleSignupSubmit(e) {
         e.preventDefault();
         statusMsg.textContent = '';
-        
+
         // Validate
         const emailValid = FormHandler.validateField('email', FormHandler.validators.email);
         const userValid = FormHandler.validateField('user', FormHandler.validators.username);
@@ -113,7 +118,7 @@
           const pass = passInput.value;
           return val === pass ? '' : 'As senhas não conferem.';
         });
-        
+
         if (!emailValid || !userValid || !passValid || !pass2Valid) {
           const firstInvalid = FormHandler.getFirstErrorField([
             { fieldId: 'email', valid: emailValid },
@@ -124,16 +129,16 @@
           $(firstInvalid).focus();
           return;
         }
-        
+
         btnSignup.disabled = true;
         btnSignup.textContent = 'Criando conta…';
-        
+
         const email = emailInput.value.trim();
         const username = userInput.value.trim();
         const password = passInput.value;
-        
+
         const result = await Auth.register(username, email, password);
-        
+
         if (result === 'exists') {
           btnSignup.disabled = false;
           btnSignup.textContent = 'Criar conta';
@@ -141,7 +146,7 @@
           userInput.focus();
           return;
         }
-        
+
         if (result === 'email-exists') {
           btnSignup.disabled = false;
           btnSignup.textContent = 'Criar conta';
@@ -149,25 +154,30 @@
           emailInput.focus();
           return;
         }
-        
+
         if (result !== 'ok') {
           btnSignup.disabled = false;
           btnSignup.textContent = 'Criar conta';
-          statusMsg.textContent = 'Erro ao salvar conta. Tente novamente.';
+          statusMsg.textContent = result === 'network'
+            ? 'Sem conexão. Verifique sua internet.'
+            : 'Erro ao criar a conta. Tente novamente.';
           return;
         }
-        
+
+        // perfil do próprio usuário (não bloqueia o cadastro se falhar)
+        try { await Db.saveProfile(Auth.current()); } catch (err) { console.warn('Perfil não salvo:', err); }
+        await Auth.logout();
         statusMsg.textContent = 'Conta criada! Levando você ao login…';
         setTimeout(() => {
-          window.location.href = 'index.html?cadastrado=1&usuario=' + encodeURIComponent(username);
+          PageTransitions.navigate('../index.html?cadastrado=1&email=' + encodeURIComponent(email));
         }, 1200);
       }
-      
+
       function handleURLParams() {
         const params = new URLSearchParams(location.search);
         if (params.get('usuario')) userInput.value = params.get('usuario');
       }
-      
+
       initialize();
     })();
   </script>

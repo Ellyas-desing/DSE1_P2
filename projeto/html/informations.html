@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu</title>
+  <title>Informações</title>
   <script>
     // aplica a cor escolhida antes de desenhar a página (evita piscar)
     try { document.documentElement.dataset.cor = localStorage.getItem('menu-cor') || 'azul'; } catch (e) {}
@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="menu">
   <div class="backdrop" aria-hidden="true"></div>
@@ -32,7 +32,7 @@
     </button>
 
     <nav class="topbar-right">
-      <a class="text-btn" href="informations.html">Informações</a>
+      <a class="text-btn" href="menu.html">Menu</a>
     </nav>
   </header>
 
@@ -40,7 +40,7 @@
     <p class="hint" id="hint" aria-live="polite">Toque na logo para ligar o sistema.</p>
 
     <!-- 4 cards em CSS grid, de tamanhos diferentes. Troque títulos e textos à vontade. -->
-    <section class="tiles" id="tiles" aria-label="Atalhos do menu">
+    <section class="tiles" id="tiles" aria-label="Informações">
       <article class="tile tile-1">
         <span class="tile-num">01</span>
         <h2>Meu painel</h2>
@@ -73,17 +73,25 @@
     </button>
   </footer>
 
-  <script src="auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/page-transitions.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
 
-    const user = Auth.current();
-    if (!user) location.replace('index.html');
-    $('hello').textContent = 'Olá, ' + user;
-    $('logout').addEventListener('click', () => {
-      Auth.logout();
+    Auth.require("../index.html").then((u) => {
+      document.getElementById("hello").textContent = "Olá, " + Auth.nameOf(u);
+    });
+
+    // ---- Sair (com transição) ----
+    $('logout').addEventListener('click', async () => {
+      $('logout').disabled = true;
+      await PageTransitions.fadeOut();
+      await Auth.logout();
       try { sessionStorage.removeItem('sistema'); } catch (e) {}
-      location.assign('index.html');
+      location.assign('../index.html');
     });
 
     // ---- Sistema ligado/desligado pela logo ----

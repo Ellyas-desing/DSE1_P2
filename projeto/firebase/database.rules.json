@@ -1,0 +1,44 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "profile": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['name', 'email'])",
+          "name": { ".validate": "newData.isString() && newData.val().length <= 60" },
+          "email": { ".validate": "newData.isString() && newData.val().length <= 120" },
+          "$other": { ".validate": false }
+        }
+      }
+    },
+
+    "sensores": {
+      "$dev": {
+        ".read": "auth != null && data.child('owner').val() === auth.uid",
+
+        "ultima": {
+          ".write": "auth != null && auth.uid === $dev",
+          ".validate": "newData.child('t').isNumber()",
+          "$campo": {
+            ".validate": "newData.isNumber() || newData.isString() || newData.isBoolean()"
+          }
+        },
+
+        "historico": {
+          ".indexOn": ["t"],
+          "$id": {
+            ".write": "auth != null && auth.uid === $dev && !data.exists()",
+            ".validate": "newData.child('t').isNumber()",
+            "$campo": {
+              ".validate": "newData.isNumber() || newData.isString() || newData.isBoolean()"
+            }
+          }
+        }
+      }
+    }
+  }
+}
